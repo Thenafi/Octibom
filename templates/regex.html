@@ -1,0 +1,15 @@
+{% extends "base.html" %} {% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="title">Enter Listing IDs</h1>
+        <textarea id="inputbox" class="textarea is-info"></textarea>
+        <br />
+        <br />
+        <button id="button1" class="button">Submit</button>
+        <button id="buttoncopy" class="button">Copy</button>
+        <br /><br /><br />
+        <div id="renderdiv" class="box">Render Will Happen Here</div>
+    </div>
+</section>
+<script src="{{url_for('static', filename='main.js')}}"></script>
+{%endblock%}
