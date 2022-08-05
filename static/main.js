@@ -26,24 +26,24 @@ const occasionFinder = function (sentence) {
   let _return_words = [];
   for (let i = 0; i < wordsList.length; i++) {
     const word = wordsList[i];
-    if (sentence.toLowerCase().search(word.toLowerCase()) > 1) {
+    if (sentence.toLowerCase().search(word.toLowerCase()) >= 0) {
       _return_words.push(word);
     } else if (
-      sentence.toLowerCase().search("valentine") > 1 ||
-      sentence.toLowerCase().search("valentines") > 1 ||
-      sentence.toLowerCase().search("valentine's") > 1
+      sentence.toLowerCase().search("valentine") >= 0 ||
+      sentence.toLowerCase().search("valentines") >= 0 ||
+      sentence.toLowerCase().search("valentine's") >= 0
     ) {
       _return_words.push("Valentine's Day");
     } else if (
-      sentence.toLowerCase().search("fathers day") > 1 ||
-      sentence.toLowerCase().search("father") > 1 ||
-      sentence.toLowerCase().search("father's") > 1
+      sentence.toLowerCase().search("fathers day") >= 0 ||
+      sentence.toLowerCase().search("father") >= 0 ||
+      sentence.toLowerCase().search("father's") >= 0
     ) {
       _return_words.push("Father's Day");
     } else if (
-      sentence.toLowerCase().search("mothers day") > 1 ||
-      sentence.toLowerCase().search("mother") > 1 ||
-      sentence.toLowerCase().search("mother's") > 1
+      sentence.toLowerCase().search("mothers day") >= 0 ||
+      sentence.toLowerCase().search("mother") >= 0 ||
+      sentence.toLowerCase().search("mother's") >= 0
     ) {
       _return_words.push("Mother's Day");
     }
@@ -53,11 +53,12 @@ const occasionFinder = function (sentence) {
 
 const addingHtmlInDiv = function () {
   if (window.location.pathname === "/render") {
+    occasionDivElement.innerHTML = "";
     renderDivElement.innerHTML = `${inputBoxElement.value}`;
-
-    for (const element of occasionFinder(renderDivElement.textContent)) {
-      html = `<input type="text" value="${element}"/>`;
-      occasionDivElement.insertAdjacentHTML("afterbegin", html);
+    const array = occasionFinder(renderDivElement.textContent);
+    for (let i = 0; i < 4; i++) {
+      html = `<input type="text" value="${array[i] ? array[i] : ""}"/>`;
+      occasionDivElement.innerHTML += html;
     }
   } else {
     const regexp = /(\d+)/g;
