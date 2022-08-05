@@ -1,5 +1,3 @@
-from ast import Num
-from mimetypes import init
 from flask import Flask, render_template
 from dotenv import load_dotenv
 from pantry_wrapper import *
