@@ -57,8 +57,14 @@ const addingHtmlInDiv = function () {
     renderDivElement.innerHTML = `${inputBoxElement.value}`;
     const array = occasionFinder(renderDivElement.textContent);
     for (let i = 0; i < 4; i++) {
+      if (i==1||i==2){
       html = `<input type="text" value="${array[i] ? array[i] : ""}"/>`;
-      occasionDivElement.innerHTML += html;
+      occasionDivElement.innerHTML += html;}
+      else{
+        html = `<input type="text" value=""/>`;
+        occasionDivElement.innerHTML += html;
+      }
+
     }
   } else {
     const regexp = /(\d+)/g;

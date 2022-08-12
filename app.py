@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Flask, render_template
 from dotenv import load_dotenv
 from pantry_wrapper import *
@@ -31,12 +32,10 @@ def getallid():
 
 @app.route('/storing/<id>')
 def storing(id):
-    my_pantry_id = os.environ.get('PANID')
     try:
-        data = get_contents(my_pantry_id, my_basket, return_type='body')
+        data = {'idlist': [{"sku":int(id),"date":datetime.now().strftime("%x")}]}
+        append_basket(my_pantry_id, my_basket,data,return_type='body')
     except:
         print('Error: call failed')
-    data['idlist'].append(int(id))
-    append_basket(my_pantry_id, my_basket,data,return_type='body')
     return "Done"
 
