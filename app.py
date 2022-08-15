@@ -66,7 +66,7 @@ def datacreator():
             "failed" : 0,
             "failed_id" : []
         }
-        skulist =  [int(i) for i in re.findall("(\d+)", request.form["idboxname"])]
+        skulist =  [int(i) for i in re.findall("(\d+)", request.form["idboxname"])].sort()
         result['totalid'] = len(skulist)
         category = request.form['catboxname']
         for i in skulist:
@@ -74,14 +74,15 @@ def datacreator():
                 single_product = Info(sku=i, category= category)
                 scraaped_info =  scraping(i)
 
-                if scraaped_info['report']:
+                if scraaped_info['report'] is not None:
                     print(single_product, type(single_product))
                     single_product.isproblem = True
-                    single_product.problem = scraaped_info['report']
+                    single_product.problem = stringogen(scraaped_info['report'])
                     result['failed']+=1
                     result['failed_id'].append(i)
                 else:
                     result['success']+=1
+                
                 db.session.add(single_product)
                 db.session.commit()
             else:
@@ -100,4 +101,24 @@ def get_listing():
 
 @app.route("/get_listing/<sku>")
 def get_single_listing(sku):
-    return render_template('listing.html')
+    scraaped_info =  scraping(sku)
+    scraaped_info['total_occasions'] =[
+    "Anniversary",
+    "Birthday",
+    "Christmas",
+    "Easter",
+    "Engagement",
+    "Father's Day",
+    "Halloween",
+    "Hanukkah",
+    "Hen Party",
+    "Mother's Day",
+    "New Baby & Christenings",
+    "New Year's",
+    "Stag Party",
+    "Valentine's Day",
+    "Wedding",
+    "Wedding Gifts",
+  ]
+    scraaped_info['occasions_present'] = list(occasion_finder(scraaped_info["description"],scraaped_info["total_occasions"]))
+    return render_template('listing.html', data = scraaped_info)
