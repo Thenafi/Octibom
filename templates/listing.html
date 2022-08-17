@@ -1,88 +1,31 @@
 {% extends "base.html" %} {% block content %}
-<div class="container ">
+<div class="container">
   <div class="columns">
-    
-    <img id="myImg"
-    class="column is-one-third"
-    src="http://www.qfonic.com/images/products/27453/image01_2000.jpg"
-    alt="First Image"
-    width="100"
-    height="100"
-  />
-  <!-- The Modal -->
-<div id="myModal" class="modal">
-  <span class="close">&times;</span>
-  <img class="modal-content" id="img01">
-  <div id="caption"></div>
-</div>
-  <br />
-  <div class="column">
-    <p><b>{{data['name']}} </b></p>
-    <p><i>SKU : {{data['sku']}}</i></p>
+    <img class="column is-one-third" src="{{data.list_of_urls[0]}}" alt="First Image" width="100" height="100" />
     <br />
-    <p style="font-size: 12px" id="txtbox1">{{data['description']|safe}}</p>
+    <div class="column">
+      <p><b>{{data['name']}} </b></p>
+      <p><i>SKU : {{data['sku']}}</i></p>
+      <br />
+      <p style="font-size: 12px" id="txtbox1">{{data['description']|safe}}</p>
+    </div>
   </div>
-  </div>
-  {% for i in range(4) %}
   <div class="columns">
-    <div class="column">
-      <input class="input" type="text" value="" id={{i}} />
-    </div>
-    <div class="column">
-      <label for="cars">Choose occasion:</label>
+    <div class="column">{{data['source']|safe}}</div>
+    <div class="column"><a href="../done_listing/{{data['sku']}}">Done</a>
+      <br><br>
 
-      <select name="cars" onchange="function{{i}}(event)">
-        {% for occasions in data['total_occasions'] %}
-        <option value={{occasions}}>{{occasions}}</option>
-        {% endfor %}
+    <div style="background-color: green; ">.</div>
+    <div style="background-color: blue; ">.</div>
+    <div style="background-color: yellow; ">.</div>
+    </div>
 
-      </select>
-    </div>
-    <div class="column">
-      <button class="button" onclick="ClearFields{{i}}();">Clear</button>
-    </div>
   </div>
-{% endfor %}
 
-
-
-<script>
-      // Get the modal
-var modal = document.getElementById('myModal');
-
-// Get the image and insert it inside the modal - use its "alt" text as a caption
-var img = document.getElementById('myImg');
-var modalImg = document.getElementById("img01");
-var captionText = document.getElementById("caption");
-img.onclick = function(){
-  modal.style.display = "block";
-  modalImg.src = this.src;
-  captionText.innerHTML = this.alt;
-}
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() { 
-  modal.style.display = "none";
-}
-</script>
   <script>
-    const occasionsList = {{ data.occasions_present| tojson}}
     const textareaElements = document.getElementsByTagName("textarea");
     textareaElements[0].classList.add(["textarea"], ["is-normal"]);
     textareaElements[0].setAttribute("rows", "15");
-    {% for i in range(4) %}
-      const function{{i}} = function(e) {
-      document.getElementById({{i}}).value = e.target.value
-      }
-      const ClearFields{{i}} = function(){
-      document.getElementById({{i}}).value = ""
-      }
-
-
-    {% endfor %}
   </script>
   {%endblock%}
 </div>

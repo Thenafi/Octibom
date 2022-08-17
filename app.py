@@ -53,7 +53,7 @@ def storing(id):
         append_basket(my_pantry_id, my_basket,data,return_type='body')
     except:
         print('Error: call failed')
-    return "Done"
+    return render_template('done.html')
 
 @app.route('/datacreator', methods=["POST","GET"])
 def datacreator():
@@ -66,7 +66,8 @@ def datacreator():
             "failed" : 0,
             "failed_id" : []
         }
-        skulist =  [int(i) for i in re.findall("(\d+)", request.form["idboxname"])].sort()
+        skulist =  [int(i) for i in re.findall("(\d+)", request.form["idboxname"])]
+        skulist.sort()
         result['totalid'] = len(skulist)
         category = request.form['catboxname']
         for i in skulist:
@@ -98,27 +99,45 @@ def get_listing():
     if single_product is not None:
         url = f'/get_listing/{single_product.sku}'
         return redirect(url)
+    else:
+        return "No Listing"
 
 @app.route("/get_listing/<sku>")
 def get_single_listing(sku):
-    scraaped_info =  scraping(sku)
-    scraaped_info['total_occasions'] =[
-    "Anniversary",
-    "Birthday",
-    "Christmas",
-    "Easter",
-    "Engagement",
-    "Father's Day",
-    "Halloween",
-    "Hanukkah",
-    "Hen Party",
-    "Mother's Day",
-    "New Baby & Christenings",
-    "New Year's",
-    "Stag Party",
-    "Valentine's Day",
-    "Wedding",
-    "Wedding Gifts",
-  ]
-    scraaped_info['occasions_present'] = list(occasion_finder(scraaped_info["description"],scraaped_info["total_occasions"]))
-    return render_template('listing.html', data = scraaped_info)
+    single_product = Info.query.get(sku)
+    if single_product is None:
+        return  "Not Listed"
+    else:
+        scraaped_info =  scraping(sku)
+        scraaped_info['total_occasions'] =[
+        "Anniversary",
+        "Birthday",
+        "Christmas",
+        "Easter",
+        "Engagement",
+        "Father's Day",
+        "Halloween",
+        "Hanukkah",
+        "Hen Party",
+        "Mother's Day",
+        "New Baby & Christenings",
+        "New Year's",
+        "Stag Party",
+        "Valentine's Day",
+        "Wedding",
+        "Wedding Gifts",
+    ]
+        scraaped_info['occasions_present'] = list(occasion_finder(scraaped_info["description"],scraaped_info["total_occasions"]))
+        return render_template('listing.html', data = scraaped_info)
+
+
+
+@app.route("/done_listing/<sku>")
+def done_listing(sku):
+    single_product = Info.query.get(sku)
+    if single_product is None:
+        return  "Not Listed"
+    else:
+        single_product.islisted=True
+        db.session.commit()
+        return render_template('done.html')
