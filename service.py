@@ -15,14 +15,14 @@ def imagecheck (url):
         return False
 
 def stringogen(item):
-    if type(item)== "Array":
+    if type(item) is list:
         return ','.join(item)
-    elif type(item) == "String":
+    elif type(item) is str:
         item.split(',')
     elif item == None:
         return None
     else :
-        print("Something Went Wrong array maker")
+        print(item, type(item))
         return "Something Went Wrong array maker"
 
 
