@@ -84,8 +84,7 @@
   const sortedList = Array.from(items).sort(function(a, b) {
     const c = a.querySelector('.input').value, d = b.querySelector('.input').value;
     return c < d ? 1 : c > d ? -1 : 0;
-  });a
-  console.table(sortedList)
+  });
   for (let item of sortedList) {
     frag.appendChild(item);
   }

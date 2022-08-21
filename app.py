@@ -144,6 +144,11 @@ def done_listing(sku):
         single_product.islisted=True
         single_product.listingdate = datetime.now()
         db.session.commit()
+        try:
+            data = {'idlist': [{"sku":int(id),"date":datetime.now().strftime("%x")}]}
+            append_basket(my_pantry_id, my_basket,data,return_type='body')
+        except:
+            print('Error: call failed')
         return render_template('done.html',data = "Listing Added")
 
 #app the problem pathaile always array patha the hobe strinogen er bhitore
@@ -189,3 +194,9 @@ def setallaslisted():
     db.session.add_all(fruit_names)
     db.session.commit()
     return "meh"
+
+@app.route("/listingdoneperday")
+def listingdoneperday():
+    todays_datetime = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
+    list_of_products = Info.query.filter(Info.listingdate >= todays_datetime).all()
+    return render_template('done.html', data = len(list_of_products))
