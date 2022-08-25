@@ -19,6 +19,8 @@
       </div>
       <div class="column">
         <select class="select" name="cars" onchange="function{{i}}(event)">
+          <option value="-">-</option>
+
           {% for occasions in data['total_occasions'] %}
           <option value="{{occasions|safe}}">{{occasions}}</option>
           {% endfor %}
