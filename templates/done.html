@@ -1,13 +1,17 @@
 {% extends "base.html" %} {% block content %}
 <div class="container">
+{% if data is not string %}
 Listing Done Today {{ data[0] }}
 <br>
 Total Listed Today {{ data[1] }}
 
 <br>
 In database {{ data[2]}}
-
 <br>
+{% else %}
+{{ data }}
+<br>
+{% endif %}
 <a href="../get_listing">New Listing</a>
 </div>
 

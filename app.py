@@ -151,7 +151,7 @@ def done_listing(sku):
             append_basket(my_pantry_id, my_basket,data,return_type='body')
         except:
             print('Error: call failed')
-        return render_template('done.html',data = "Listing Added")
+        return render_template('done.html',data = str("Listing Added"))
 
 #app the problem pathaile always array patha the hobe strinogen er bhitore
 @app.route("/issue/<sku>")
@@ -209,17 +209,13 @@ def info():
 @app.route("/listingtable")
 def listingtable(): 
         page = request.args.get('page', 1, type=int)
-        pagination = Info.query.order_by(Info.listingdate).paginate(
+        pagination = Info.query.filter_by(islisted=True).order_by(Info.listingdate).paginate(
             page, per_page=100)
         return render_template('listingtable.html', pagination=pagination)
 
 @app.route("/listingtable2")
 def listingtable2(): 
-    page = request.args.get('page', 1, type=int)
-    pagination = Info.query.filter_by(islisted=True).paginate(
-        page, per_page=100)
-    
-    return render_template('listingtable.html', pagination=pagination)
+    return redirect(url_for('listingtable'))
 
 if __name__ == "__main__":
   app.run()
