@@ -131,6 +131,8 @@ def get_single_listing(sku):
         "Wedding Gifts",
     ]
         scraaped_info['occasions_present'] = list(occasion_finder(scraaped_info["description"],scraaped_info["total_occasions"]))
+        scraaped_info['done'] = single_product.islisted
+        scraaped_info['category'] = single_product.category
         return render_template('listing.html', data = scraaped_info)
 
 
@@ -145,7 +147,7 @@ def done_listing(sku):
         single_product.listingdate = datetime.now()
         db.session.commit()
         try:
-            data = {'idlist': [{"sku":int(id),"date":datetime.now().strftime("%x")}]}
+            data = {'idlist': [{"sku":int(sku),"date":datetime.now().strftime("%x")}]}
             append_basket(my_pantry_id, my_basket,data,return_type='body')
         except:
             print('Error: call failed')
@@ -195,8 +197,29 @@ def setallaslisted():
     db.session.commit()
     return "meh"
 
-@app.route("/listingdoneperday")
-def listingdoneperday():
+@app.route("/info")
+def info():
     todays_datetime = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
     list_of_products = Info.query.filter(Info.listingdate >= todays_datetime).all()
-    return render_template('done.html', data = len(list_of_products))
+    totaldone = Info.query.filter_by(islisted=True).all()
+    addedindatabse =Info.query.all()
+    return render_template('done.html', data = [len(list_of_products),len(totaldone), len(addedindatabse)])
+
+
+@app.route("/listingtable")
+def listingtable(): 
+        page = request.args.get('page', 1, type=int)
+        pagination = Info.query.order_by(Info.listingdate).paginate(
+            page, per_page=100)
+        return render_template('listingtable.html', pagination=pagination)
+
+@app.route("/listingtable2")
+def listingtable2(): 
+    page = request.args.get('page', 1, type=int)
+    pagination = Info.query.filter_by(islisted=True).paginate(
+        page, per_page=100)
+    print([x for x in pagination.iter_pages()])
+    return render_template('listingtable.html', pagination=pagination)
+
+if __name__ == "__main__":
+  app.run()

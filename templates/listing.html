@@ -6,6 +6,7 @@
     </div>
     <div class="column">
       <p ><b>{{data['name']}} </b></p>
+      <p > ¬ {{data['category']}}</p>
       <p><i>SKU : {{data['sku']}}</i></p>
       <br />
       <p style="font-size: 10px" id="txtbox1">{{data['description']|safe}}</p>
@@ -50,11 +51,11 @@
       <a href="../notlisted/{{data['sku']}}">Mark As not Listed</a>
     </div>
   </div>
-
+<div>{{data['done']}}</div>
   </div>
 
   <script>
-    const occasionsList = {{ data.occasions_present| tojson}}
+    const occasionsList = {{ data.occasions_present| tojson}}.slice(0,4)
     const textareaElements = document.getElementsByTagName("textarea");
     textareaElements[0].classList.add(["textarea"], ["is-normal"]);
     textareaElements[0].setAttribute("rows", "15");
@@ -71,7 +72,9 @@
 
     {% endfor %}
     for (let index = 0; index < occasionsList.length; index++) {
+
       const element = occasionsList[index];
+      console.log(element)
       document.getElementById(index).value = element
 
     }
@@ -94,5 +97,5 @@
   list.appendChild(frag);
 }
   </script>
-  {%endblock%}
 </div>
+{%endblock%}

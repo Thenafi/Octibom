@@ -1,0 +1,58 @@
+{% extends "base.html" %} {% block content %}
+
+<table class="table is-fullwidth">
+    <thead>
+        <tr>
+            <th>SKU</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for product in pagination.items %}
+    
+                <tr>
+                    <td>{{ product.sku }}</td>
+                    <td>{{ product.listingdate }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
+<div>
+
+    <!-- Pagination Links-->
+<div class="text-right">
+    <a href="{{ url_for('listingtable2', page=pagination.prev_num) }}"
+       class="btn btn-outline-dark 
+       {% if pagination.page == 1 %}disabled{% endif %}">
+        &laquo;
+    </a><!-- Loop through the number of pages to display a link for each-->
+    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+    {% if page_num %}
+<!-- Check for the active page and set the link to "Active"-->
+            {% if pagination.page == page_num %}
+            <a href="{{ url_for('listingtable2', page=page_num) }}"
+               class="btn btn-dark">
+                {{ page_num }}
+            </a>
+            {% else %}
+            <a href="{{ url_for('listingtable2', page=page_num) }}"
+               class="btn btn-outline-dark">
+                {{ page_num }}
+            </a>
+            {% endif %}
+        {% else %}
+            ...
+        {% endif %}
+    {% endfor %}    <a href="{{ url_for('listingtable2', page=pagination.next_num) }}"
+       class="btn btn-outline-dark 
+       {% if pagination.page == pagination.pages %}disabled{% endif %}">
+        &raquo;
+    </a>
+</div>
+<p class="text-right mt-3">
+   Showing page {{ pagination.page }} of {{ pagination.pages }}
+</p>
+</div>
+{%endblock%}
