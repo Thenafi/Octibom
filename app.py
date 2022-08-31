@@ -218,7 +218,7 @@ def listingtable2():
     page = request.args.get('page', 1, type=int)
     pagination = Info.query.filter_by(islisted=True).paginate(
         page, per_page=100)
-    print([x for x in pagination.iter_pages()])
+    
     return render_template('listingtable.html', pagination=pagination)
 
 if __name__ == "__main__":
