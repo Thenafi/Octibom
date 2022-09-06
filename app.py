@@ -133,6 +133,7 @@ def get_single_listing(sku):
         scraaped_info['occasions_present'] = list(occasion_finder(scraaped_info["description"],scraaped_info["total_occasions"]))
         scraaped_info['done'] = single_product.islisted
         scraaped_info['category'] = single_product.category
+        scraaped_info['extra_image'] = f'https://www.qfonic.com/images/products/{sku}/image07_2000.jpg'
         return render_template('listing.html', data = scraaped_info)
 
 
@@ -209,7 +210,7 @@ def info():
 @app.route("/listingtable")
 def listingtable(): 
         page = request.args.get('page', 1, type=int)
-        pagination = Info.query.filter_by(islisted=True).order_by(Info.listingdate).paginate(
+        pagination = Info.query.filter_by(islisted=True).order_by(Info.listingdate.desc()).paginate(
             page, per_page=100)
         return render_template('listingtable.html', pagination=pagination)
 
