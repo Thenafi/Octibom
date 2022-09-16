@@ -1,6 +1,7 @@
 from datetime import datetime
 import re
 import string
+from unicodedata import category
 from flask import Flask, render_template , request , redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
@@ -97,15 +98,21 @@ def datacreator():
 
 
 @app.route("/get_listing")
-def get_listing():
-    single_product = Info.query.filter_by(islisted=False, isproblem = False).first()
+@app.route("/get_listing/")
+@app.route("/get_listing/<cat>")
+def get_listing(cat=None):
+    if cat:
+        single_product = Info.query.filter_by(islisted=False, isproblem = False,category=cat).first()
+    else:
+        single_product = Info.query.filter_by(islisted=False, isproblem = False).first()
+   
     if single_product is not None:
-        url = f'/get_listing/{single_product.sku}'
+        url = f'/listing/{single_product.sku}'
         return redirect(url)
     else:
         return "No Listing"
 
-@app.route("/get_listing/<sku>")
+@app.route("/listing/<sku>")
 def get_single_listing(sku):
     single_product = Info.query.get(sku)
     if single_product is None:
@@ -135,6 +142,7 @@ def get_single_listing(sku):
         scraaped_info['category'] = single_product.category
         scraaped_info['extra_image'] = f'https://www.qfonic.com/images/products/{sku}/image07_2000.jpg'
         return render_template('listing.html', data = scraaped_info)
+
 
 
 
