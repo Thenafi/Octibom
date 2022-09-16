@@ -71,7 +71,7 @@
   textareaElements[0].classList.add(["textarea"], ["is-normal"]);
   textareaElements[0].setAttribute("rows", "15");
   {% for i in range(4) %}
-  const function{ { i } } = function(e) {
+  const function{{ i }} = function(e) {
     document.getElementById({{ i }}).value = e.target.value
   sorter()
       }
