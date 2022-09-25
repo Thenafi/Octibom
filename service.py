@@ -1,5 +1,3 @@
-from gettext import find
-from typing import Set
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
@@ -29,15 +27,17 @@ def stringogen(item):
 def occasion_finder(input_strng_st, occasion_list):
     _list = []
     input_strng = str(input_strng_st).lower()
-    for word in [i for i in occasion_list]:
-        if input_strng.find(word.lower())>0:
+    for word in  occasion_list:
+        if  word.lower() in input_strng:
             _list.append(word)
-        elif input_strng.find("valentine") or input_strng.find('valentines') or input_strng.find('valentine"s'):
+        elif "valentine" in input_strng  or'valentines' in input_strng or 'valentine"s' in input_strng:
             _list.append("Valentine's Day")
-        elif input_strng.find("fathers day") or input_strng.find('father') or input_strng.find('father"s'):
+        elif "fathers day" in input_strng or 'father' in input_strng or 'father"s' in input_strng:
             _list.append("Father's Day")
-        elif input_strng.find("mothers day") or input_strng.find('mother') or input_strng.find('mother"s'):
+        elif "mothers day" in input_strng or 'mother' in input_strng or 'mother"s' in input_strng:
             _list.append("Mother's Day")
+        elif "pregnancy" in input_strng or 'new baby' in input_strng or 'pregnancy annoucement' in input_strng:
+            _list.append("New Baby & Christenings")
     return set(_list)
 
 def scraping(sku):
@@ -49,7 +49,8 @@ def scraping(sku):
         data['name'] = soup_values[2]
         data["source"] = BeautifulSoup(res.content, "html.parser").body
         if len(soup_values[2]) > 3:
-            data['list_of_urls'] = [soup_values[i] for i in range(9,15)]
+            data['list_of_urls'] = [soup_values[i] for i in range(9,15)] 
+            # [soup_values[i] for i in range(46,50)]
             checked_list = [imagecheck(i) for i in data['list_of_urls']]
             if not all(checked_list):
                 data['report'].append("Image Not Ok")
@@ -62,7 +63,6 @@ def scraping(sku):
         data['report'].append("Something Wrong With Design Claim")
 
     return data
-
 
 
 
