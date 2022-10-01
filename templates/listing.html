@@ -35,17 +35,22 @@
         <button class="button" onclick="addgreenDiv()"> Start</button>
       </div>
 
-
       {% if i == 0 %}
       <div class="column">
-        <figure class="image is-24x24"><img src="{{data['extra_image']}}" alt="7th Image for the listing"></figure>
+        <figure class="image is-24x24"><img src="{{data['extra_image']}}" alt="7th Image"></figure>
       </div>
+
       {% else %}
-      <div class="column"> </div>
+      <div class="column">
+      </div>
       {%endif%}
     </div>
     {% endfor %}
-
+    {% for i in range(3) %}
+    <div class="columns">      
+      <input class="input" type="text" value="{{data.key_features[i]}}"/>
+ </div>
+ {% endfor %}
   </div>
   <div class="columns">
     <div class="column">

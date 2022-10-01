@@ -114,6 +114,10 @@ def get_listing(cat=None):
 @app.route("/listing/<sku>")
 def get_single_listing(sku):
     single_product = Info.query.get(sku)
+    key_feature= request.args.get("key1")
+    key_feature2= request.args.get("key2")
+    key_feature3= request.args.get("key3")
+
     if single_product is None:
         return  "Not Listed"
     else:
@@ -140,6 +144,8 @@ def get_single_listing(sku):
         scraaped_info['done'] = single_product.islisted
         scraaped_info['category'] = single_product.category
         scraaped_info['extra_image'] = f'https://www.qfonic.com/images/products/{sku}/image07_2000.jpg'
+        scraaped_info['key_features'] = [key_feature,key_feature2,key_feature3]
+        
         return render_template('listing.html', data = scraaped_info)
 
 
