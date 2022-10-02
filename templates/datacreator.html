@@ -1,0 +1,17 @@
+{% extends "base.html" %} {% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="title">Enter Listing IDs</h1>
+
+        <form action="" method="post" onsubmit="return validateForm()" id="form1">
+            <label for="Enter ID">Enter ID:</label>
+            <textarea class="textarea is-info" type="text" id="idbox" name="idboxname"></textarea><br>
+            <label for="categoryname">Category Name :</label>
+            <input class="input" type="text" id="catbox" name="catboxname">
+        </form>
+        <br>
+        <button class="button" type="submit" form="form1" value="Submit">Submit</button>
+    </div>
+</section>
+<script src="{{url_for('static', filename='main.js')}}"></script>
+{%endblock%}

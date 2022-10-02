@@ -9,15 +9,29 @@
   <title>Octibom</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
   <link rel="icon" type="image/png" href="https://img.icons8.com/color-glass/48/000000/water-element.png" />
+  
   <style>
     .box {
       background-color: rgb(220, 220, 220);
     }
+    .containerforimage {
+    width: 500px;
+    height:500px;
+}
+
+/* Resize images */
+.containerforimage img {
+    width: 100%;
+    height: auto;
+}
   </style>
 </head>
 
 <body>
+  <div style="background-color: yellow; ">.</div>
   {% block content %} {% endblock %}
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </body>
 
 </html>

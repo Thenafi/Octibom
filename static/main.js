@@ -1,4 +1,4 @@
-const buttonElement = document.getElementById("button1");
+const submitbuttonElement = document.getElementById("button1");
 const renderDivElement = document.getElementById("renderdiv");
 const inputBoxElement = document.getElementById("inputbox");
 const copyButtonElement = document.getElementById("buttoncopy");
@@ -80,6 +80,14 @@ function copyDivToClipboard() {
   document.execCommand("copy");
   window.getSelection().removeAllRanges();
 }
-buttonElement.addEventListener("click", addingHtmlInDiv);
-
+submitbuttonElement.addEventListener("click", addingHtmlInDiv);
 copyButtonElement.addEventListener("click", copyDivToClipboard);
+
+
+function validateForm() {
+  var x = document.forms['form1']["catboxname"].value;
+  if (x == "") {
+    alert("Category must be filled out");
+    return false;
+  }
+}
