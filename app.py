@@ -1,6 +1,5 @@
 from datetime import datetime
 import re
-
 from flask import Flask, render_template , request , redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
@@ -160,11 +159,6 @@ def done_listing(sku):
         single_product.islisted=True
         single_product.listingdate = datetime.now()
         db.session.commit()
-        try:
-            data = {'idlist': [{"sku":int(sku),"date":datetime.now().strftime("%x")}]}
-            append_basket(my_pantry_id, my_basket,data,return_type='body')
-        except:
-            print('Error: call failed')
         return render_template('done.html',data = str("Listing Added"))
 
 #app the problem pathaile always array patha the hobe strinogen er bhitore

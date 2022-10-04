@@ -1,3 +1,9 @@
 {
-  "cSpell.words": ["amzondonelist", "dotenv", "Octibom", "PANID"]
+  "cSpell.words": [
+    "amzondonelist",
+    "dotenv",
+    "Octibom",
+    "PANID"
+  ],
+  "python.formatting.provider": "black"
 }
