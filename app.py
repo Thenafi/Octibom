@@ -27,7 +27,7 @@ class Info(db.Model):
     isproblem = db.Column(db.Boolean, default=False, nullable=False)
     listingdate = db.Column(db.DateTime, default=None)
     problem = db.Column(db.String(250), default=None)
-    prodlem_josn = db.Column(db.Json, default=None)
+    prodlem_josn = db.Column(db.JSON, default=None)
 
 
 @app.route("/")
@@ -155,6 +155,8 @@ def done_listing(sku):
     if request.method == "POST":
         content = request.form["content"]
         single_product.prodlem_josn = content
+        db.session.commit()
+        return render_template("done.html", data=str(content))
 
     else:
         if single_product is None:
@@ -205,13 +207,12 @@ def notlisted(sku):
 def setallaslisted():
     fruit_names = Info.query.all()
     dic = {}
-
     for i in fruit_names:
         i.islisted = True
         i.listingdate = datetime.now()
-        for iss in dic["idlist"]:
-            if iss["sku"] == i.sku:
-                i.listingdate = datetime.strptime(iss["date"], "%x")
+        # for iss in dic["idlist"]:
+        #     if iss["sku"] == i.sku:
+        #         i.listingdate = datetime.strptime(iss["date"], "%x")
     db.session.add_all(fruit_names)
     db.session.commit()
     return "meh"
