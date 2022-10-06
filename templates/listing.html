@@ -46,12 +46,12 @@
       {%endif%}
     </div>
     {% endfor %}
-    {% for i in range(3) %}
-    <div class="columns">      
-      <input class="input" type="text" value="{{data.key_features[i]}}"/>
- </div>
- {% endfor %}
   </div>
+  {% for i in range(3) %}
+  <div class="columns">      
+    <input class="input" type="text" value="{{data.key_features[i]}}"/>
+</div>
+{% endfor %}
   <div class="columns">
     <div class="column">
       {{data['source']|safe}}
