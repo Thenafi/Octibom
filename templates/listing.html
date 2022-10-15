@@ -68,6 +68,12 @@
     </div>
   </div>
   <div>{{data['done']}}</div>
+
+  <div>
+    {% for i in range(5) %}
+    <div><input value="{{data['audience_present'][i]|safe}}"></input></div>
+    {%endfor %}
+  </div>
 </div>
 
 <script>

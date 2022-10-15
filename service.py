@@ -40,6 +40,14 @@ def occasion_finder(input_strng_st, occasion_list):
             _list.append("New Baby & Christenings")
     return set(_list)
 
+def audience_finder(input_strng_st):
+    _list = []
+    input_strng = str(input_strng_st).lower()
+    for word in ["Men", "Women", "mother", "Aunt", "Baby Boys", "Baby Girls", "Boyfriend", "Boys", "Brother", "Brother In Law", "Daughter", "Daughter In Law", "Father", "Girlfriend", "Girls", "Goddaughter", "Godfather", "Godmother", "Godparent", "Godson", "Grandchild", "Granddaughter", "Grandfather", "Grandmother", "Grandson", "Husband", "Nanny", "Nephew", "Niece", "Sister", "Sister In Law", "Son", "Son In Law", "Stepdaughter", "Stepfather", "Stepmother", "Stepson", "Uncle", "Unisex-Adults", "Unisex-Babies", "Unisex-Kids", "Unisex-Youth", "Wife"]:
+        if  word.lower() in input_strng:
+            _list.append(word)
+    return set(_list)
+
 def scraping(sku):
     res = requests.get(f"{os.environ.get('BASE_URL')}/AddProdut2.php?ProductID={sku}")
     data = {"sku":sku, "report":[], }

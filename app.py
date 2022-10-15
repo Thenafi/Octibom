@@ -141,6 +141,7 @@ def get_single_listing(sku):
         "Wedding Gifts",
     ]
         scraaped_info['occasions_present'] = list(occasion_finder(scraaped_info["name"] + " "+ scraaped_info["description"]   ,scraaped_info["total_occasions"]))
+        scraaped_info['audience_present'] = list(audience_finder(scraaped_info["name"] + " "+ scraaped_info["description"]  ))
         scraaped_info['done'] = single_product.islisted
         scraaped_info['category'] = single_product.category
         scraaped_info['extra_image'] = f'https://www.qfonic.com/images/products/{sku}/image07_2000.jpg'
