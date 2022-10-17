@@ -74,3 +74,11 @@ def scraping(sku):
 
 
 
+def url_maker(lst):
+    if "Birthday" in lst:
+        return "https://tinyurl.com/birthdaybirthday23"
+    if "Christmas" in lst:
+        return "https://tinyurl.com/sesonalcard"
+    if "Anniversary" in lst:
+        return "https://tinyurl.com/anniversarysitex"
+    return "https://tinyurl.com/otherothero2ther"

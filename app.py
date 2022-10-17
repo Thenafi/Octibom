@@ -101,7 +101,7 @@ def datacreator():
 @app.route("/get_listing/<cat>")
 def get_listing(cat=None):
     if cat:
-        single_product = Info.query.filter_by(islisted=False, isproblem = False,category=cat).first()
+        single_product = Info.query.filter_by(islisted=False, isproblem = False,category=cat).order_by(Info.sku.desc()).first()
     else:
         single_product = Info.query.filter_by(islisted=False, isproblem = False).first()
    
@@ -146,6 +146,7 @@ def get_single_listing(sku):
         scraaped_info['category'] = single_product.category
         scraaped_info['extra_image'] = f'https://www.qfonic.com/images/products/{sku}/image07_2000.jpg'
         scraaped_info['key_features'] = [key_feature,key_feature2,key_feature3]
+        scraaped_info['url_address'] = url_maker(scraaped_info['occasions_present'])
         
         return render_template('listing.html', data = scraaped_info)
 
