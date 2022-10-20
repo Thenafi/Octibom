@@ -122,24 +122,7 @@ def get_single_listing(sku):
         return  "Not Listed"
     else:
         scraaped_info =  scraping(sku)
-        scraaped_info['total_occasions'] =[
-        "Anniversary",
-        "Birthday",
-        "Christmas",
-        "Easter",
-        "Engagement",
-        "Father's Day",
-        "Halloween",
-        "Hanukkah",
-        "Hen Party",
-        "Mother's Day",
-        "New Baby & Christenings",
-        "New Year's",
-        "Stag Party",
-        "Valentine's Day",
-        "Wedding",
-        "Wedding Gifts",
-    ]
+        scraaped_info['total_occasions'] =["Birthday", "Anniversary", "kitchen", "Akshaya Tritiya", "Baby Shower", "Bachelor Party", "Back to School", "Baptism", "Bhai Dooj", "Bridal Shower", "Christmas", "Cocktail Party", "Congratulations", "Diwali", "Easter", "Eid", "Engagement", "Farewell", "Father's Day", "Friendship Day", "Funeral", "Galentine's Day", "Get Well", "Good Luck", "Graduation", "Grandparent's Day", "Halloween", "Hanukkah", "Holiday", "Housewarming", "Karwa Chauth", "Kwanzaa", "Mardi Gras", "Memorial Day", "Miss You", "Mother's Day", "New Year", "Onam", "Passover", "Pregnancy Announcement", "Prom", "Raksha Bandhan", "Retirement", "St. Patrick's Day", "Sympathy", "Thank You", "Thanksgiving", "Valentine's Day", "Veteran's Day", "Wedding", "Women's Day"]
         scraaped_info['occasions_present'] = list(occasion_finder(scraaped_info["name"] + " "+ scraaped_info["description"]   ,scraaped_info["total_occasions"]))
         scraaped_info['audience_present'] = list(audience_finder(scraaped_info["name"] + " "+ scraaped_info["description"]  ))
         scraaped_info['done'] = single_product.islisted
