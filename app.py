@@ -127,6 +127,7 @@ def get_single_listing(sku):
         scraaped_info['audience_present'] = list(audience_finder(scraaped_info["name"] + " "+ scraaped_info["description"]  ))
         scraaped_info['done'] = single_product.islisted
         scraaped_info['category'] = single_product.category
+        scraaped_info['material_from_keywords_cleaned'] = cleaning_materila_keyword(scraaped_info['material_from_keywords'], ['Metal Opener','Wooden Handle'])
         scraaped_info['extra_image'] = f'https://www.qfonic.com/images/products/{sku}/image07_2000.jpg'
         scraaped_info['key_features'] = [key_feature,key_feature2,key_feature3]
         scraaped_info['url_address'] = url_maker(scraaped_info['occasions_present'])

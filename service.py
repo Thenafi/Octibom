@@ -1,7 +1,10 @@
+from array import array
+from tokenize import String
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import os
+import re
 load_dotenv()
 
 
@@ -22,6 +25,19 @@ def stringogen(item):
     else :
         print(item, type(item))
         return "Something Went Wrong array maker"
+
+def cleaning_materila_keyword(stringinput: str, default_list:array):
+    if "Material:" in stringinput:
+        txt = stringinput.replace("Material:", '').strip()
+        try:
+            txt_list = [i.strip() for i in txt.split("/")]
+            if "Bottle Opener Size: 14 x 4cm" in txt_list:
+                txt_list.remove('Bottle Opener Size: 14 x 4cm')
+            return txt_list 
+        except:
+            return default_list
+    return default_list
+
 
 
 def occasion_finder(input_strng_st, occasion_list):
@@ -55,8 +71,9 @@ def scraping(sku):
     data = {"sku":sku, "report":[], }
     if res.ok:
         soup_values = [i['value'] for i in BeautifulSoup(res.content, "html.parser").find_all('input')]
-        data['description'] =  str(BeautifulSoup(res.content, "html.parser").find_all('textarea')[0])[10:-11]
+        data['description'] =  str(BeautifulSoup(res.content, "html.parser").find_all('textarea')[0])[10:-11] # spliting because there was textarea tag in the paresed area
         data['name'] = soup_values[2]
+        data['material_from_keywords'] = soup_values[18]
         data["source"] = BeautifulSoup(res.content, "html.parser").body
         if len(soup_values[2]) > 3:
             data['list_of_urls'] = [soup_values[i] for i in range(9,15)] 
