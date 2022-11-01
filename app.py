@@ -100,6 +100,10 @@ def datacreator():
 @app.route("/get_listing/")
 @app.route("/get_listing/<cat>")
 def get_listing(cat=None):
+    key_feature= request.args.get("key1")
+    key_feature2= request.args.get("key2")
+    key_feature3= request.args.get("key3")
+    qtgry= request.args.get("qtgry")
     if cat:
         single_product = Info.query.filter_by(islisted=False, isproblem = False,category=cat).order_by(Info.sku.desc()).first()
     else:
@@ -107,7 +111,7 @@ def get_listing(cat=None):
    
     if single_product is not None:
         url = f'/listing/{single_product.sku}'
-        return redirect(url)
+        return redirect(url_for("get_single_listing", sku=single_product.sku,qtgry =  qtgry))
     else:
         return "No Listing"
 
@@ -117,20 +121,25 @@ def get_single_listing(sku):
     key_feature= request.args.get("key1")
     key_feature2= request.args.get("key2")
     key_feature3= request.args.get("key3")
-
+    qtgry= request.args.get("qtgry")
     if single_product is None:
         return  "Not Listed"
     else:
         scraaped_info =  scraping(sku)
         scraaped_info['total_occasions'] =["Birthday", "Anniversary", "kitchen", "Akshaya Tritiya", "Baby Shower", "Bachelor Party", "Back to School", "Baptism", "Bhai Dooj", "Bridal Shower", "Christmas", "Cocktail Party", "Congratulations", "Diwali", "Easter", "Eid", "Engagement", "Farewell", "Father's Day", "Friendship Day", "Funeral", "Galentine's Day", "Get Well", "Good Luck", "Graduation", "Grandparent's Day", "Halloween", "Hanukkah", "Holiday", "Housewarming", "Karwa Chauth", "Kwanzaa", "Mardi Gras", "Memorial Day", "Miss You", "Mother's Day", "New Year", "Onam", "Passover", "Pregnancy Announcement", "Prom", "Raksha Bandhan", "Retirement", "St. Patrick's Day", "Sympathy", "Thank You", "Thanksgiving", "Valentine's Day", "Veteran's Day", "Wedding", "Women's Day"]
-        scraaped_info['occasions_present'] = list(occasion_finder(scraaped_info["name"] + " "+ scraaped_info["description"]   ,scraaped_info["total_occasions"]))
+        scraaped_info['total_department'] =["Women's", "Girl's", "Unisex", "Baby Boys", "Baby Girls", "Boy's", "Men's", "Unisex Baby", "Unisex Kids"] # dont need it or else planned to manually select the items
+        scraaped_info['occasions_present'] = list(occasion_finder(scraaped_info["name"]  ,scraaped_info["total_occasions"]))
         scraaped_info['audience_present'] = list(audience_finder(scraaped_info["name"] + " "+ scraaped_info["description"]  ))
         scraaped_info['done'] = single_product.islisted
         scraaped_info['category'] = single_product.category
         scraaped_info['material_from_keywords_cleaned'] = cleaning_materila_keyword(scraaped_info['material_from_keywords'], ['Metal Opener','Wooden Handle'])
         scraaped_info['extra_image'] = f'https://www.qfonic.com/images/products/{sku}/image07_2000.jpg'
         scraaped_info['key_features'] = [key_feature,key_feature2,key_feature3]
-        scraaped_info['url_address'] = url_maker(scraaped_info['occasions_present'])
+        if qtgry ==None:
+            scraaped_info['url_address'] = url_maker(scraaped_info['occasions_present'])
+        else:
+            scraaped_info['url_address'] = url_maker((scraaped_info['name']),"Key")
+
         
         return render_template('listing.html', data = scraaped_info)
 

@@ -59,7 +59,7 @@ def occasion_finder(input_strng_st, occasion_list):
 def audience_finder(input_strng_st):
     _list = []
     input_strng = str(input_strng_st).lower()
-    for word in ["Men", "Women", "mother", "Aunt", "Baby Boys", "Baby Girls", "Boyfriend", "Boys", "Brother", "Brother In Law", "Daughter", "Daughter In Law", "Father", "Girlfriend", "Girls", "Goddaughter", "Godfather", "Godmother", "Godparent", "Godson", "Grandchild", "Granddaughter", "Grandfather", "Grandmother", "Grandson", "Husband", "Nanny", "Nephew", "Niece", "Sister", "Sister In Law", "Son", "Son In Law", "Stepdaughter", "Stepfather", "Stepmother", "Stepson", "Uncle", "Unisex-Adults", "Unisex-Babies", "Unisex-Kids", "Unisex-Youth", "Wife"]:
+    for word in ["Men", "Women", "Mother", "Aunt", "Baby Boys", "Baby Girls", "Boyfriend", "Boys", "Brother", "Brother In Law", "Daughter", "Daughter In Law", "Father", "Girlfriend", "Girls", "Goddaughter", "Godfather", "Godmother", "Godparent", "Godson", "Grandchild", "Granddaughter", "Grandfather", "Grandmother", "Grandson", "Husband", "Nanny", "Nephew", "Niece", "Sister", "Sister In Law", "Son", "Son In Law", "Stepdaughter", "Stepfather", "Stepmother", "Stepson", "Uncle", "Unisex-Adults", "Unisex-Babies", "Unisex-Kids", "Unisex-Youth", "Wife"]:
         if  word.lower() in input_strng:
             _list.append(word)
     if(len(set(_list))==0):
@@ -93,11 +93,18 @@ def scraping(sku):
 
 
 
-def url_maker(lst):
-    if "Birthday" in lst:
-        return "https://tinyurl.com/birthdaybirthday23"
-    if "Christmas" in lst:
-        return "https://tinyurl.com/sesonalcard"
-    if "Anniversary" in lst:
-        return "https://tinyurl.com/anniversarysitex"
-    return "https://tinyurl.com/otherothero2ther"
+def url_maker(data:str,qtgry=None):
+    if qtgry==None:
+        if "Birthday" in data:
+            return "https://tinyurl.com/birthdaybirthday23"
+        if "Christmas" in data:
+            return "https://tinyurl.com/sesonalcard"
+        if "Anniversary" in data:
+            return "https://tinyurl.com/anniversarysitex"
+            
+        return "https://tinyurl.com/otherothero2ther"
+    else:
+        if any(word.lower() in data.lower() for word in ['Girl', 'Women', 'Her','Mother', 'Girlfriend', 'she', 'daughter']):
+            return "https://tinyurl.com/keyringmanwo"
+        return "https://tinyurl.com/keyringman"
+
