@@ -96,8 +96,6 @@ def datacreator():
 
 
 
-@app.route("/get_listing")
-@app.route("/get_listing/")
 @app.route("/get_listing/<cat>")
 def get_listing(cat=None):
     key_feature= request.args.get("key1")
@@ -110,8 +108,7 @@ def get_listing(cat=None):
         single_product = Info.query.filter_by(islisted=False, isproblem = False).first()
    
     if single_product is not None:
-        url = f'/listing/{single_product.sku}'
-        return redirect(url_for("get_single_listing", sku=single_product.sku,qtgry =  qtgry))
+        return redirect(url_for("get_single_listing", sku=single_product.sku,qtgry =  qtgry, cat=cat))
     else:
         return "No Listing"
 
@@ -122,17 +119,28 @@ def get_single_listing(sku):
     key_feature2= request.args.get("key2")
     key_feature3= request.args.get("key3")
     qtgry= request.args.get("qtgry")
+    cat= request.args.get("cat")
     if single_product is None:
         return  "Not Listed"
     else:
         scraaped_info =  scraping(sku)
+        if scraaped_info['inputs_len'] !=53:
+            single_product.isproblem=True
+            if single_product.problem == None:
+                single_product.problem = stringogen(['Extra Inputs'])
+            else :
+                single_product.problem = stringogen(stringogen(single_product.problem).append("Extra Inputs"))
+            db.session.commit()
+            return redirect(url_for("get_listing",cat= cat,qtgry =  qtgry))        
+        else:
+            pass
         scraaped_info['total_occasions'] =["Birthday", "Anniversary", "kitchen", "Akshaya Tritiya", "Baby Shower", "Bachelor Party", "Back to School", "Baptism", "Bhai Dooj", "Bridal Shower", "Christmas", "Cocktail Party", "Congratulations", "Diwali", "Easter", "Eid", "Engagement", "Farewell", "Father's Day", "Friendship Day", "Funeral", "Galentine's Day", "Get Well", "Good Luck", "Graduation", "Grandparent's Day", "Halloween", "Hanukkah", "Holiday", "Housewarming", "Karwa Chauth", "Kwanzaa", "Mardi Gras", "Memorial Day", "Miss You", "Mother's Day", "New Year", "Onam", "Passover", "Pregnancy Announcement", "Prom", "Raksha Bandhan", "Retirement", "St. Patrick's Day", "Sympathy", "Thank You", "Thanksgiving", "Valentine's Day", "Veteran's Day", "Wedding", "Women's Day"]
         scraaped_info['total_department'] =["Women's", "Girl's", "Unisex", "Baby Boys", "Baby Girls", "Boy's", "Men's", "Unisex Baby", "Unisex Kids"] # dont need it or else planned to manually select the items
         scraaped_info['occasions_present'] = list(occasion_finder(scraaped_info["name"]  ,scraaped_info["total_occasions"]))
         scraaped_info['audience_present'] = list(audience_finder(scraaped_info["name"] + " "+ scraaped_info["description"]  ))
         scraaped_info['done'] = single_product.islisted
         scraaped_info['category'] = single_product.category
-        scraaped_info['material_from_keywords_cleaned'] = cleaning_materila_keyword(scraaped_info['material_from_keywords'], ['Metal Opener','Wooden Handle'])
+        scraaped_info['material_from_keywords_cleaned'] = cleaning_materila_keyword(scraaped_info['material_from_keywords'], ['Wooden Handle','Metal Hammer Head'])
         scraaped_info['extra_image'] = f'https://www.qfonic.com/images/products/{sku}/image07_2000.jpg'
         scraaped_info['key_features'] = [key_feature,key_feature2,key_feature3]
         if qtgry ==None:

@@ -19,7 +19,10 @@ def stringogen(item):
     if type(item) is list:
         return ','.join(item)
     elif type(item) is str:
-        item.split(',')
+        if item != "Manual Issue":
+            return ["Manual Issue"]
+        else:
+            return item.split(',')
     elif item == None:
         return None
     else :
@@ -71,6 +74,7 @@ def scraping(sku):
     data = {"sku":sku, "report":[], }
     if res.ok:
         soup_values = [i['value'] for i in BeautifulSoup(res.content, "html.parser").find_all('input')]
+        data['inputs_len'] =len(soup_values)
         data['description'] =  str(BeautifulSoup(res.content, "html.parser").find_all('textarea')[0])[10:-11] # spliting because there was textarea tag in the paresed area
         data['name'] = soup_values[2]
         data['material_from_keywords'] = soup_values[18]
@@ -87,7 +91,7 @@ def scraping(sku):
             data['report'].append("Issue With Title")
 
     else :
-        data['report'].append("Something Wrong With Design Claim")
+        data['report'].append("Something Wrong With Design Claim - Site -X")
 
     return data
 
