@@ -6,16 +6,15 @@ from dotenv import load_dotenv
 from pantry_wrapper import *
 import os
 from service import *
-from ibm_db_alembic.ibm_db import IbmDbImpl
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 load_dotenv()
 app = Flask(__name__)
 
-ibm = os.environ.get("MYSQL")
+mysql = os.environ.get("MYSQL")
 
-app.config["SQLALCHEMY_DATABASE_URI"] = ibm
+app.config["SQLALCHEMY_DATABASE_URI"] = mysql
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
@@ -115,6 +114,15 @@ def get_listing_etsy(cat=None):
         single_product = Info.query.filter_by(islisted=False, isproblem=False).first()
 
     if single_product is not None:
+        sku = single_product.sku
+        scraaped_info = scraping(sku)
+        if scraaped_info["report"] != None:
+            single_product = Info.query.get(sku)
+            single_product.isproblem = True
+            single_product.problem = stringogen(scraaped_info["report"])
+            db.session.commit()
+            url = f"/get_listing_etsy/{cat}"
+            return redirect(url)
         url = f"http://192.168.123.77/sitex/ListingManager/amazon/AddProdut.php?ProductID={single_product.sku}"
         return redirect(url)
     else:
