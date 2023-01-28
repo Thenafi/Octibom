@@ -73,12 +73,31 @@ def scraping(sku):
     res = requests.get(f"{os.environ.get('BASE_URL')}/AddProdut2.php?ProductID={sku}")
     data = {"sku":sku, "report":[], }
     if res.ok:
+        all_content_soup =  BeautifulSoup(res.content, "html.parser")
         soup_values = [i['value'] for i in BeautifulSoup(res.content, "html.parser").find_all('input')]
         data['inputs_len'] =len(soup_values)
         data['description'] =  str(BeautifulSoup(res.content, "html.parser").find_all('textarea')[0])[10:-11] # spliting because there was textarea tag in the paresed area
         data['name'] = soup_values[2]
         data['material_from_keywords'] = soup_values[18]
-        data["source"] = BeautifulSoup(res.content, "html.parser").body
+
+        # huswidth = soup_values[25]
+        # if len(huswidth)==0:
+
+        #     # to make everything zero
+
+        #     # for i in range(25,29):
+        #         # all_content_soup.find_all('input')[i]['value'] = 0
+        #     for i in range(37,40):
+        #         all_content_soup.find_all('input')[i]['value'] = 0
+
+        #     # fixed values for mt3 in cm
+        #     all_content_soup.find_all('input')[25]['value'] = 5
+        #     all_content_soup.find_all('input')[26]['value'] = 5
+        #     all_content_soup.find_all('input')[27]['value'] = 5
+        #     all_content_soup.find_all('input')[28]['value'] = 2
+
+
+        data["source"] = all_content_soup.body
         if len(soup_values[2]) > 3:
             data['list_of_urls'] = [soup_values[i] for i in range(9,15)] 
             # [soup_values[i] for i in range(46,50)]
