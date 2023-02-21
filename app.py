@@ -182,6 +182,8 @@ def issue(sku):
     single_product = Info.query.get(sku)
     if single_product is None:
         return "Not Listed"
+    elif single_product.isproblem:
+        return "Issue already added"
     else:
         single_product.isproblem = True
         if single_product.problem == None:
@@ -264,4 +266,4 @@ def listingtable2():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0")
