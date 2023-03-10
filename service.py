@@ -91,17 +91,23 @@ def scraping(sku):
         #         all_content_soup.find_all('input')[i]['value'] = 0
 
             # fixed values for mt3 in cm
-        # all_content_soup.find_all('input')[25]['value'] = 5 #huswidth
-        # all_content_soup.find_all('input')[38]['value'] = 5 #huswidth
-        # all_content_soup.find_all('input')[26]['value'] = 100 #huslength
-        # all_content_soup.find_all('input')[37]['value'] = 100 #huslength
-        # all_content_soup.find_all('input')[27]['value'] = 5
-        # all_content_soup.find_all('input')[28]['value'] = 100 #husheight
-        # all_content_soup.find_all('input')[39]['value'] = 100 #husheight
+        all_content_soup.find_all('input')[25]['value'] = 5 #huswidth
+        all_content_soup.find_all('input')[38]['value'] = 5 #huswidth
+        all_content_soup.find_all('input')[26]['value'] = 100 #huslength
+        all_content_soup.find_all('input')[37]['value'] = 100 #huslength
+        all_content_soup.find_all('input')[27]['value'] = 5
+        all_content_soup.find_all('input')[28]['value'] = 100 #husheight
+        all_content_soup.find_all('input')[39]['value'] = 100 #husheight
 
-        # all_content_soup.find_all('input')[40]['value'] = 115 #PackageDimensionsLength
-        # all_content_soup.find_all('input')[41]['value'] = 5 #PackageDimensionsWidth
-        # all_content_soup.find_all('input')[42]['value'] = 115 #PackageDimensionsHeight
+        all_content_soup.find_all('input')[40]['value'] = 115 #PackageDimensionsLength
+        all_content_soup.find_all('input')[41]['value'] = 5 #PackageDimensionsWidth
+        all_content_soup.find_all('input')[42]['value'] = 115 #PackageDimensionsHeight
+        all_content_soup.find_all('input')[41]['value'] = "Wood" #Material
+        all_content_soup.find_all('input')[42]['value'] = "Rectangle" #Shape
+
+
+        all_content_soup.find_all('input')[5]['value'] =0.00 #price
+        all_content_soup.find_all('input')[8]['value'] = 0.00 #personalized price
 
 
         data["source"] = all_content_soup.body
