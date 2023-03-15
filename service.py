@@ -110,8 +110,8 @@ def scraping(sku):
         # all_content_soup.find_all('input')[36]['value'] = "Rectangle" #Shape
 
 
-        # all_content_soup.find_all('input')[5]['value'] =0.00 #price
-        # all_content_soup.find_all('input')[8]['value'] = 0.00 #personalized price
+        # all_content_soup.find_all('input')[5]['value'] =5.99 #price
+        # all_content_soup.find_all('input')[8]['value'] = 5.99 #personalized price
 
 
         data["source"] = all_content_soup.body
