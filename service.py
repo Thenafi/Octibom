@@ -94,24 +94,24 @@ def scraping(sku):
         # all_content_soup.find_all('input')[15]['value'] = "A gorgeous hand made gift for a 50th Birthday! This wooden heart will make a great 50th Birthday gift for your Mum/Dad/Sister/Brother/Grandad/Nan/Women/Men/Friend and will make them laugh!" #keyword features 01
 
 
-        # all_content_soup.find_all('input')[25]['value'] = 5 #huswidth
-        # all_content_soup.find_all('input')[38]['value'] = 5 #huswidth
-        # all_content_soup.find_all('input')[26]['value'] = 100 #huslength
-        # all_content_soup.find_all('input')[37]['value'] = 100 #huslength
-        # all_content_soup.find_all('input')[27]['value'] = 5
-        # all_content_soup.find_all('input')[28]['value'] = 100 #husheight
-        # all_content_soup.find_all('input')[39]['value'] = 100 #husheight
+        # all_content_soup.find_all('input')[25]['value'] = 3 #huswidth..
+        # all_content_soup.find_all('input')[38]['value'] = 3 #huswidth
+        # all_content_soup.find_all('input')[26]['value'] = 10 #huslength
+        # all_content_soup.find_all('input')[37]['value'] = 10 #huslength
+        # all_content_soup.find_all('input')[27]['value'] = 3 #huswidth 2
+        # all_content_soup.find_all('input')[28]['value'] = 16 #husheight
+        # all_content_soup.find_all('input')[39]['value'] = 16 #husheight..
 
 
-        # all_content_soup.find_all('input')[40]['value'] = 115 #PackageDimensionsLength
-        # all_content_soup.find_all('input')[41]['value'] = 5 #PackageDimensionsWidth
-        # all_content_soup.find_all('input')[42]['value'] = 115 #PackageDimensionsHeight
-        # all_content_soup.find_all('input')[35]['value'] = "Wood" #Material
+        # all_content_soup.find_all('input')[40]['value'] = 10 #PackageDimensionsLength..
+        # all_content_soup.find_all('input')[41]['value'] = 3 #PackageDimensionsWidth..
+        # all_content_soup.find_all('input')[42]['value'] = 16 #PackageDimensionsHeight ..
+        # all_content_soup.find_all('input')[35]['value'] = "Plastic" #Material
         # all_content_soup.find_all('input')[36]['value'] = "Rectangle" #Shape
 
 
-        # all_content_soup.find_all('input')[5]['value'] =5.99 #price
-        # all_content_soup.find_all('input')[8]['value'] = 5.99 #personalized price
+        # all_content_soup.find_all('input')[5]['value'] =12.99 #price
+        # all_content_soup.find_all('input')[8]['value'] = 12.99 #personalized price ...
 
 
         data["source"] = all_content_soup.body
