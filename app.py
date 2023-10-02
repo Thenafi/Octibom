@@ -11,7 +11,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 load_dotenv()
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI']="sqlite:///"+os.path.join(basedir, "posts.sqlite")
+app.config['SQLALCHEMY_DATABASE_URI']="sqlite:///"+os.path.join(basedir, "posts copy.sqlite")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -103,6 +103,7 @@ def get_listing(cat=None):
     key_feature3= request.args.get("key3")
     qtgry= request.args.get("qtgry")
     if cat:
+        print("meow mewo")
         single_product = Info.query.filter_by(islisted=False, isproblem = False,category=cat).order_by(Info.sku.desc()).first()
     else:
         single_product = Info.query.filter_by(islisted=False, isproblem = False).first()
@@ -115,25 +116,29 @@ def get_listing(cat=None):
 @app.route("/listing/<sku>")
 def get_single_listing(sku):
     single_product = Info.query.get(sku)
+    print(single_product, sku)
     key_feature= request.args.get("key1")
     key_feature2= request.args.get("key2")
     key_feature3= request.args.get("key3")
     qtgry= request.args.get("qtgry")
     cat= request.args.get("cat")
+    cat = "Hammer"
     if single_product is None:
         return  "Not Listed"
     else:
         scraaped_info =  scraping(sku)
-        if scraaped_info['inputs_len'] !=53:
-            single_product.isproblem=True
-            if single_product.problem == None:
-                single_product.problem = stringogen(['Extra Inputs'])
-            else :
-                single_product.problem = stringogen(stringogen(single_product.problem).append("Extra Inputs"))
-            db.session.commit()
-            return redirect(url_for("get_listing",cat= cat,qtgry =  qtgry))        
-        else:
-            pass
+        # print(scraaped_info, "testing1")
+        # if scraaped_info['inputs_len'] !=53:
+        #     single_product.isproblem=True
+        #     if single_product.problem == None:
+        #         single_product.problem = stringogen(['Extra Inputs'])
+        #     else :
+        #         single_product.problem = stringogen(stringogen(single_product.problem).append("Extra Inputs"))
+        #     db.session.commit()
+        #     print(cat)
+        #     return redirect(url_for("get_listing",cat= cat,qtgry =  qtgry))        
+        # else:
+        #     pass
         scraaped_info['total_occasions'] =["Birthday", "Anniversary", "kitchen", "Akshaya Tritiya", "Baby Shower", "Bachelor Party", "Back to School", "Baptism", "Bhai Dooj", "Bridal Shower", "Christmas", "Cocktail Party", "Congratulations", "Diwali", "Easter", "Eid", "Engagement", "Farewell", "Father's Day", "Friendship Day", "Funeral", "Galentine's Day", "Get Well", "Good Luck", "Graduation", "Grandparent's Day", "Halloween", "Hanukkah", "Holiday", "Housewarming", "Karwa Chauth", "Kwanzaa", "Mardi Gras", "Memorial Day", "Miss You", "Mother's Day", "New Year", "Onam", "Passover", "Pregnancy Announcement", "Prom", "Raksha Bandhan", "Retirement", "St. Patrick's Day", "Sympathy", "Thank You", "Thanksgiving", "Valentine's Day", "Veteran's Day", "Wedding", "Women's Day"]
         scraaped_info['total_department'] =["Women's", "Girl's", "Unisex", "Baby Boys", "Baby Girls", "Boy's", "Men's", "Unisex Baby", "Unisex Kids"] # dont need it or else planned to manually select the items
         scraaped_info['occasions_present'] = list(occasion_finder(scraaped_info["name"]  ,scraaped_info["total_occasions"]))
@@ -223,7 +228,7 @@ def removelisting():
     db.session.commit()
     return "done"
 
-@app.route("/info")
+@app.route("/info")                     
 def info():
     todays_datetime = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
     list_of_products = Info.query.filter(Info.listingdate >= todays_datetime).all()
