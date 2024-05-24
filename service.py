@@ -1,92 +1,150 @@
+from array import array
+from tokenize import String
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import os
-
+import re
 load_dotenv()
 
 
-def imagecheck(url):
+def imagecheck (url):
     res = requests.get(url)
-    if res.ok:
+    if res.ok :
         return True
-    else:
+    else :
         return False
-
 
 def stringogen(item):
     if type(item) is list:
-        return ",".join(item)
+        return ','.join(item)
     elif type(item) is str:
-        item.split(",")
+        if item != "Manual Issue":
+            return ["Manual Issue"]
+        else:
+            return item.split(',')
     elif item == None:
         return None
-    else:
+    else :
         print(item, type(item))
         return "Something Went Wrong array maker"
+
+def cleaning_materila_keyword(stringinput: str, default_list:array):
+    if "Material:" in stringinput:
+        txt = stringinput.replace("Material:", '').strip()
+        try:
+            txt_list = [i.strip() for i in txt.split("/")]
+            if "Bottle Opener Size: 14 x 4cm" in txt_list:
+                txt_list.remove('Bottle Opener Size: 14 x 4cm')
+            return txt_list 
+        except:
+            return default_list
+    return default_list
+
 
 
 def occasion_finder(input_strng_st, occasion_list):
     _list = []
     input_strng = str(input_strng_st).lower()
-    for word in occasion_list:
-        if word.lower() in input_strng:
+    for word in  occasion_list:
+        if  word.lower() in input_strng:
             _list.append(word)
-        elif (
-            "valentine" in input_strng
-            or "valentines" in input_strng
-            or 'valentine"s' in input_strng
-        ):
+        elif "valentine" in input_strng  or'valentines' in input_strng or 'valentine"s' in input_strng:
             _list.append("Valentine's Day")
-        elif (
-            "fathers day" in input_strng
-            or "father" in input_strng
-            or 'father"s' in input_strng
-        ):
+        elif "fathers day" in input_strng or 'father' in input_strng or 'father"s' in input_strng:
             _list.append("Father's Day")
-        elif (
-            "mothers day" in input_strng
-            or "mother" in input_strng
-            or 'mother"s' in input_strng
-        ):
+        elif "mothers day" in input_strng or 'mother' in input_strng or 'mother"s' in input_strng:
             _list.append("Mother's Day")
-        elif (
-            "pregnancy" in input_strng
-            or "new baby" in input_strng
-            or "pregnancy annoucement" in input_strng
-        ):
+        elif "pregnancy" in input_strng or 'new baby' in input_strng or 'pregnancy annoucement' in input_strng:
             _list.append("New Baby & Christenings")
     return set(_list)
 
+def audience_finder(input_strng_st):
+    _list = []
+    input_strng = str(input_strng_st).lower()
+    for word in ["Men", "Women", "Mother", "Aunt", "Baby Boys", "Baby Girls", "Boyfriend", "Boys", "Brother", "Brother In Law", "Daughter", "Daughter In Law", "Father", "Girlfriend", "Girls", "Goddaughter", "Godfather", "Godmother", "Godparent", "Godson", "Grandchild", "Granddaughter", "Grandfather", "Grandmother", "Grandson", "Husband", "Nanny", "Nephew", "Niece", "Sister", "Sister In Law", "Son", "Son In Law", "Stepdaughter", "Stepfather", "Stepmother", "Stepson", "Uncle", "Unisex-Adults", "Unisex-Babies", "Unisex-Kids", "Unisex-Youth", "Wife"]:
+        if  word.lower() in input_strng:
+            _list.append(word)
+    if(len(set(_list))==0):
+        return ["Men","Women"]
+    return set(_list)
 
 def scraping(sku):
     res = requests.get(f"{os.environ.get('BASE_URL')}/AddProdut2.php?ProductID={sku}")
-    data = {
-        "sku": sku,
-        "report": [],
-    }
+    data = {"sku":sku, "report":[], }
     if res.ok:
-        soup_values = [
-            i["value"]
-            for i in BeautifulSoup(res.content, "html.parser").find_all("input")
-        ]
-        data["description"] = str(
-            BeautifulSoup(res.content, "html.parser").find_all("textarea")[0]
-        )[10:-11]
-        data["name"] = soup_values[2]
-        data["source"] = BeautifulSoup(res.content, "html.parser").body
-        if len(soup_values[2]) > 3 and len(soup_values[2]) < 138:
-            data["list_of_urls"] = [soup_values[i] for i in range(9, 15)]
-            # [soup_values[i] for i in range(46,50)]
-            checked_list = [imagecheck(i) for i in data["list_of_urls"]]
-            if not all(checked_list):
-                data["report"].append("Image Not Ok")
-            else:
-                data["report"] = None
-        else:
-            data["report"].append("Issue With Title")
+        all_content_soup =  BeautifulSoup(res.content, "html.parser")
+        soup_values = [i['value'] for i in BeautifulSoup(res.content, "html.parser").find_all('input')]
+        data['inputs_len'] =len(soup_values)
+        data['description'] =  str(BeautifulSoup(res.content, "html.parser").find_all('textarea')[0])[10:-11] # spliting because there was textarea tag in the paresed area
+        data['name'] = soup_values[2]
+        data['material_from_keywords'] = soup_values[18]
 
-    else:
-        data["report"].append("Something Wrong With Design Claim")
+        # huswidth = soup_values[25]
+        # if len(huswidth)==0:
+
+        #     # to make everything zero
+
+        #     # for i in range(25,29):
+        #         # all_content_soup.find_all('input')[i]['value'] = 0
+        #     for i in range(37,40):
+        #         all_content_soup.find_all('input')[i]['value'] = 0
+
+        #     # fixed values for mt3 in cm
+        # all_content_soup.find_all('input')[15]['value'] = "A gorgeous hand made gift for a 50th Birthday! This wooden heart will make a great 50th Birthday gift for your Mum/Dad/Sister/Brother/Grandad/Nan/Women/Men/Friend and will make them laugh!" #keyword features 01
+
+
+        # all_content_soup.find_all('input')[25]['value'] = 0.3 #huswidth..
+        # all_content_soup.find_all('input')[38]['value'] = 0.3 #huswidth
+        # all_content_soup.find_all('input')[26]['value'] = 10 #huslength
+        # all_content_soup.find_all('input')[37]['value'] = 10 #huslength
+        # all_content_soup.find_all('input')[27]['value'] = 10 #huswidth 2
+        # all_content_soup.find_all('input')[28]['value'] = 10 #husheight
+        # all_content_soup.find_all('input')[39]['value'] = 10 #husheight..
+
+
+        # all_content_soup.find_all('input')[40]['value'] = 10 #PackageDimensionsLength..
+        # all_content_soup.find_all('input')[41]['value'] = 0.3 #PackageDimensionsWidth..
+        # all_content_soup.find_all('input')[42]['value'] = 10 #PackageDimensionsHeight ..
+        # all_content_soup.find_all('input')[35]['value'] = "Card" #Material
+        # all_content_soup.find_all('input')[36]['value'] = "Rectangle" #Shape
+
+
+        # all_content_soup.find_all('input')[5]['value'] =21.99 #price...
+        # all_content_soup.find_all('input')[8]['value'] = 21.99 #personalized price ...
+
+
+        data["source"] = all_content_soup.body
+        if len(soup_values[2]) > 3:
+            data['list_of_urls'] = [soup_values[i] for i in range(9,15)] 
+            # [soup_values[i] for i in range(46,50)]
+            checked_list = [imagecheck(i) for i in data['list_of_urls']]
+            if not all(checked_list):
+                data['report'].append("Image Not Ok")
+            else:
+                data['report'] = None
+        else :
+            data['report'].append("Issue With Title")
+
+    else :
+        data['report'].append("Something Wrong With Design Claim - Site -X")
 
     return data
+
+
+
+def url_maker(data:str,qtgry=None):
+    if qtgry==None:
+        if "Birthday" in data:
+            return "https://tinyurl.com/birthdaybirthday23"
+        if "Christmas" in data:
+            return "https://tinyurl.com/sesonalcard"
+        if "Anniversary" in data:
+            return "https://tinyurl.com/anniversarysitex"
+            
+        return "https://tinyurl.com/otherothero2ther"
+    else:
+        if any(word.lower() in data.lower() for word in ['Girl', 'Women', 'Her','Mother', 'Girlfriend', 'she', 'daughter']):
+            return "https://tinyurl.com/keyringmanwo"
+        return "https://tinyurl.com/keyringman"
+

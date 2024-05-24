@@ -1,10 +1,42 @@
-{% extends "base.html" %} {% block content %}
-<div class="container">
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta property="og:title" content="Octibom Done" />
+  <meta property="og:type" content="Helper Web App" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Octibom Done</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+  <link rel="icon" type="image/png" href="https://img.icons8.com/color-glass/48/000000/water-element.png" />
+  
+  <style>
+    .box {
+      background-color: rgb(220, 220, 220);
+    }
+    .containerforimage {
+    width: 500px;
+    height:500px;
+}
+
+/* Resize images */
+.containerforimage img {
+    width: 100%;
+    height: auto;
+}
+  </style>
+</head>
+
+<body>
+  <div style="background-color: yellow; ">.</div>
+  <div class="container">
     {% if data is not string %}
     Listing Done Today {{ data[0] }}
     <br>
     Total Listed Today {{ data[1] }}
-
+    
     <br>
     In database {{ data[2]}}
     <br>
@@ -13,14 +45,12 @@
     <br>
     {% endif %}
     <a href="../get_listing">New Listing</a>
-</div>
+    </div>
+    
+    
+    
 
-<form method="post">
-    <label for="content">Message Content</label>
-    <br>
-    <textarea name="content" placeholder="Message content" rows="15" cols="60">{{ request.form['content'] }}</textarea>
-    <br>
-    <button type="submit">Submit</button>
-</form>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</body>
 
-{%endblock%}
+</html>
