@@ -83,6 +83,50 @@ def datacreator():
         db.session.commit()
         return result
 
+@app.route("/data-clear", methods=["POST", "GET"])
+def datadeleter():
+    if request.method == "GET":
+        return render_template("datacreator.html")
+    if request.method == "POST":
+        result = {
+            "totalid": 0,
+            "success": 0,
+            "not_found": 0,
+            "failed": 0,
+            "not_found_id": [],
+            "failed_id": [],
+            "updated_id": [],
+        }
+        skulist = [int(i) for i in re.findall("(\d+)", request.form["idboxname"])]
+        skulist.sort()
+        result["totalid"] = len(skulist)
+        existing_skus = []
+
+        for sku in skulist:
+            product = Info.query.get(sku)
+            if product:
+                 existing_skus.append(sku)
+            else:
+                result["not_found"] += 1
+                result["not_found_id"].append(sku)
+
+        for sku in existing_skus:
+            try:
+                product_to_update = Info.query.get(sku)
+                product_to_update.islisted = 0
+                product_to_update.isproblem = 0
+                product_to_update.listingdate = None
+                product_to_update.problem = None
+                product_to_update.prodlem_josn = None
+                db.session.commit()
+                result["success"] += 1
+                result["updated_id"].append(sku)
+            except Exception as e:
+                db.session.rollback()
+                result["failed"] += 1
+                result["failed_id"].append(sku)
+                print(f"Failed to update SKU {sku}: {e}")
+    return result
 
 @app.route("/get_listing")
 @app.route("/get_listing/")
