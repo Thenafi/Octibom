@@ -96,21 +96,38 @@ def datacreator():
 
 
 
-@app.route("/get_listing/<cat>")
+# @app.route("/get_listing/<cat>")
+# def get_listing(cat=None):
+#     key_feature= request.args.get("key1")
+#     key_feature2= request.args.get("key2")
+#     key_feature3= request.args.get("key3")
+#     qtgry= request.args.get("qtgry")
+#     if cat:
+#         print("meow mewo")
+#         single_product = Info.query.filter_by(islisted=False, isproblem = False,category=cat).order_by(Info.sku.desc()).first()
+#     else:
+#         single_product = Info.query.filter_by(islisted=False, isproblem = False).first()
+#         print(single_product)
+   
+#     if single_product is not None:
+#         return redirect(url_for("get_single_listing", sku=single_product.sku,qtgry =  qtgry, cat=cat))
+#     else:
+#         return "No Listing"
+
+@app.route("/get_listing_new/<cat>")
 def get_listing(cat=None):
-    key_feature= request.args.get("key1")
-    key_feature2= request.args.get("key2")
-    key_feature3= request.args.get("key3")
-    qtgry= request.args.get("qtgry")
+    key_feature = request.args.get("key1")
+    key_feature2 = request.args.get("key2")
+    key_feature3 = request.args.get("key3")
+    qtgry = request.args.get("qtgry")
+    
     if cat:
-        print("meow mewo")
-        single_product = Info.query.filter_by(islisted=False, isproblem = False,category=cat).order_by(Info.sku.desc()).first()
+        single_product = Info.query.filter_by(islisted=False, isproblem=False, category=cat).order_by(Info.sku.desc()).first()
     else:
-        single_product = Info.query.filter_by(islisted=False, isproblem = False).first()
-        print(single_product)
+        single_product = Info.query.filter_by(islisted=False, isproblem=False).first()
    
     if single_product is not None:
-        return redirect(url_for("get_single_listing", sku=single_product.sku,qtgry =  qtgry, cat=cat))
+        return redirect(url_for("get_single_listing", sku=single_product.sku, qtgry=qtgry, cat=cat))
     else:
         return "No Listing"
 

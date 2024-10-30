@@ -104,6 +104,7 @@ def scraping(sku):
 
 
         # all_content_soup.find_all('input')[40]['value'] = 10 #PackageDimensionsLength..
+        all_content_soup.find_all('input')[36]['value'] = "card" #PackageDimensionsLength..
         # all_content_soup.find_all('input')[41]['value'] = 0.3 #PackageDimensionsWidth..
         # all_content_soup.find_all('input')[42]['value'] = 10 #PackageDimensionsHeight ..
         # all_content_soup.find_all('input')[35]['value'] = "Card" #Material
