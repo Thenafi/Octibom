@@ -69,6 +69,42 @@ def audience_finder(input_strng_st):
         return ["Men","Women"]
     return set(_list)
 
+def remove_redundant_words(input_string):
+    tokens = re.findall(r'[\w\']+|[^\w\s]', input_string)
+    
+    word_count = {}
+    result = []
+    
+    i = 0
+    while i < len(tokens):
+        token = tokens[i]
+        
+        if re.match(r'[\w\']+', token):
+            token_lower = token.lower()
+            
+            if token_lower not in word_count:
+                word_count[token_lower] = 0
+            
+            word_count[token_lower] += 1
+            
+            if word_count[token_lower] <= 2:
+                result.append(token)
+        else:
+            result.append(token)
+        
+        i += 1
+    
+    output = ""
+    for i, token in enumerate(result):
+        if i > 0 and re.match(r'[\w\']+', token) and not re.match(r'[^\w\s]', result[i-1]):
+            output += " "
+        
+        output += token
+        
+        if re.match(r'[^\w\s]', token):
+            output += " "
+    return output.replace("  ", " ").strip()
+
 def scraping(sku):
     res = requests.get(f"{os.environ.get('BASE_URL')}/AddProdut2.php?ProductID={sku}")
     data = {"sku":sku, "report":[], }
@@ -93,34 +129,45 @@ def scraping(sku):
         #     # fixed values for mt3 in cm
         # all_content_soup.find_all('input')[15]['value'] = "A gorgeous hand made gift for a 50th Birthday! This wooden heart will make a great 50th Birthday gift for your Mum/Dad/Sister/Brother/Grandad/Nan/Women/Men/Friend and will make them laugh!" #keyword features 01
 
+        all_content_soup.find_all('input')[2]['value'] = remove_redundant_words(soup_values[2]) #huswidth..
+        all_content_soup.find_all('input')[25]['value'] = 0.3 #huswidth..
+        all_content_soup.find_all('input')[38]['value'] = 0.3 #huswidth
+        all_content_soup.find_all('input')[26]['value'] = 10 #huslength
+        all_content_soup.find_all('input')[37]['value'] = 10 #huslength
+        all_content_soup.find_all('input')[27]['value'] = 10 #huswidth 2
+        all_content_soup.find_all('input')[28]['value'] = 10 #husheight
+        all_content_soup.find_all('input')[39]['value'] = 10 #husheight..
 
-        # all_content_soup.find_all('input')[25]['value'] = 0.3 #huswidth..
-        # all_content_soup.find_all('input')[38]['value'] = 0.3 #huswidth
-        # all_content_soup.find_all('input')[26]['value'] = 10 #huslength
-        # all_content_soup.find_all('input')[37]['value'] = 10 #huslength
-        # all_content_soup.find_all('input')[27]['value'] = 10 #huswidth 2
-        # all_content_soup.find_all('input')[28]['value'] = 10 #husheight
-        # all_content_soup.find_all('input')[39]['value'] = 10 #husheight..
 
-
-        # all_content_soup.find_all('input')[40]['value'] = 10 #PackageDimensionsLength..
+        all_content_soup.find_all('input')[40]['value'] = 10 #PackageDimensionsLength..
         all_content_soup.find_all('input')[36]['value'] = "card" #PackageDimensionsLength..
-        # all_content_soup.find_all('input')[41]['value'] = 0.3 #PackageDimensionsWidth..
-        # all_content_soup.find_all('input')[42]['value'] = 10 #PackageDimensionsHeight ..
-        # all_content_soup.find_all('input')[35]['value'] = "Card" #Material
-        # all_content_soup.find_all('input')[36]['value'] = "Rectangle" #Shape
+        all_content_soup.find_all('input')[41]['value'] = 0.3 #PackageDimensionsWidth..
+        all_content_soup.find_all('input')[42]['value'] = 10 #PackageDimensionsHeight ..
+        all_content_soup.find_all('input')[35]['value'] = "Card" #Material
+        all_content_soup.find_all('input')[36]['value'] = "Rectangle" #Shape
 
 
-        # all_content_soup.find_all('input')[5]['value'] =21.99 #price...
-        # all_content_soup.find_all('input')[8]['value'] = 21.99 #personalized price ...
+        # all_content_soup.find_all('input')[5]['value'] =19.99 #price...
+        # all_content_soup.find_all('input')[8]['value'] = 19.99 #personalized price ...
 
 
         data["source"] = all_content_soup.body
         if len(soup_values[2]) > 3:
-            data['list_of_urls'] = [soup_values[i] for i in range(9,15)] 
-            # [soup_values[i] for i in range(46,50)]
+            original_url = soup_values[9]  # assuming 9 is the first image URL
+            # Generate 10 image URLs based on pattern
+            match = re.search(r'/products/(\d+)/', original_url)
+            product_id = match.group(1) if match else 'Unknown'
+
+            base_url = re.sub(r'image\d{2}_2000\.jpg', 'image{:02d}_2000.jpg', original_url)
+            data['list_of_urls'] = [base_url.format(i) for i in range(1, 11)]
             checked_list = [imagecheck(i) for i in data['list_of_urls']]
-            if not all(checked_list):
+
+            # print(checked_list)
+
+            valid_count = sum(checked_list)
+            # if not all(checked_list):
+            if valid_count < 6:
+                print(f"Image Problem: {product_id}")
                 data['report'].append("Image Not Ok")
             else:
                 data['report'] = None
