@@ -94,6 +94,67 @@ def datacreator():
         db.session.commit()
         return result
 
+@app.route('/data-clear', methods=["POST", "GET"])
+def deleteentries():
+    if request.method == "GET":
+        return render_template("datacreator.html")  # Reuse the same HTML form
+
+    if request.method == "POST":
+        result = {
+            "deleted": 0,
+            "not_found": 0,
+            "not_found_ids": [],
+            "deleted_ids": []
+        }
+
+        skulist = [int(i) for i in re.findall("(\d+)", request.form["idboxname"])]
+        skulist.sort()
+        result['totalid'] = len(skulist)
+
+        for sku in skulist:
+            entry = Info.query.get(sku)
+            if entry:
+                db.session.delete(entry)
+                result['deleted'] += 1
+                result['deleted_ids'].append(sku)
+            else:
+                result['not_found'] += 1
+                result['not_found_ids'].append(sku)
+
+        db.session.commit()
+        return result
+
+
+@app.route('/marklisted', methods=["POST", "GET"])
+def marklisted():
+    if request.method == "GET":
+        return render_template("datacreator.html")  # Reuse the same HTML form
+
+    if request.method == "POST":
+        result = {
+            "updated": 0,
+            "not_found": 0,
+            "updated_ids": [],
+            "not_found_ids": []
+        }
+
+        skulist = [int(i) for i in re.findall("(\d+)", request.form["idboxname"])]
+        skulist.sort()
+        result['totalid'] = len(skulist)
+
+        for sku in skulist:
+            entry = Info.query.get(sku)
+            if entry:
+                entry.islisted = 1
+                result['updated'] += 1
+                result['updated_ids'].append(sku)
+            else:
+                result['not_found'] += 1
+                result['not_found_ids'].append(sku)
+
+        db.session.commit()
+        return result
+
 
 
 # @app.route("/get_listing/<cat>")
