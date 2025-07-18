@@ -60,6 +60,7 @@ def occasion_finder(input_strng_st, occasion_list):
 
 
 def scraping(sku):
+    print("sku", sku)
     res = requests.get(f"{os.environ.get('BASE_URL')}/AddProdut2.php?ProductID={sku}")
     data = {
         "sku": sku,
@@ -70,6 +71,9 @@ def scraping(sku):
             i["value"]
             for i in BeautifulSoup(res.content, "html.parser").find_all("input")
         ]
+
+        # print("content=>>>>>>>>>>>", res.content)
+
         data["description"] = str(
             BeautifulSoup(res.content, "html.parser").find_all("textarea")[0]
         )[10:-11]
@@ -78,11 +82,12 @@ def scraping(sku):
         if len(soup_values[2]) > 3 and len(soup_values[2]) < 240:
             data["list_of_urls"] = [soup_values[i] for i in range(9, 15)]
             # [soup_values[i] for i in range(46,50)]
-            checked_list = [imagecheck(i) for i in data["list_of_urls"]]
-            if not all(checked_list):
-                data["report"].append("Image Not Ok")
-            else:
-                data["report"] = None
+            data["report"] = None
+            # checked_list = [imagecheck(i) for i in data["list_of_urls"]]
+            # if not all(checked_list):
+            #     data["report"].append("Image Not Ok")
+            # else:
+            #     data["report"] = None
         else:
             data["report"].append("Issue With Title")
 

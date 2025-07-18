@@ -7,12 +7,16 @@ from pantry_wrapper import *
 import os
 from service import *
 
+# pip install mysqlclient
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-load_dotenv()
+load_dotenv(dotenv_path=os.path.join(basedir, ".env"), override=True)
 app = Flask(__name__)
 
 mysql = os.environ.get("MYSQL")
+
+print(mysql)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = mysql
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -66,7 +70,7 @@ def datacreator():
             if Info.query.get(i) is None:
                 single_product = Info(sku=i, category=category)
                 scraaped_info = scraping(i)
-
+                print(scraaped_info["report"])
                 if scraaped_info["report"] is not None:
                     single_product.isproblem = True
                     single_product.problem = stringogen(scraaped_info["report"])
@@ -83,10 +87,56 @@ def datacreator():
         db.session.commit()
         return result
 
+# @app.route("/data-clear", methods=["POST", "GET"])
+# def datadeleter():
+#     if request.method == "GET":
+#         return render_template("datacreator.html")
+#     if request.method == "POST":
+#         result = {
+#             "totalid": 0,
+#             "success": 0,
+#             "not_found": 0,
+#             "failed": 0,
+#             "not_found_id": [],
+#             "failed_id": [],
+#             "updated_id": [],
+#         }
+#         skulist = [int(i) for i in re.findall("(\d+)", request.form["idboxname"])]
+#         skulist.sort()
+#         result["totalid"] = len(skulist)
+#         existing_skus = []
+
+#         for sku in skulist:
+#             product = Info.query.get(sku)
+#             if product:
+#                  existing_skus.append(sku)
+#             else:
+#                 result["not_found"] += 1
+#                 result["not_found_id"].append(sku)
+
+#         for sku in existing_skus:
+#             try:
+#                 product_to_update = Info.query.get(sku)
+#                 product_to_update.islisted = 0
+#                 product_to_update.isproblem = 0
+#                 product_to_update.listingdate = None
+#                 product_to_update.problem = None
+#                 product_to_update.prodlem_josn = None
+#                 db.session.commit()
+#                 result["success"] += 1
+#                 result["updated_id"].append(sku)
+#             except Exception as e:
+#                 db.session.rollback()
+#                 result["failed"] += 1
+#                 result["failed_id"].append(sku)
+#                 print(f"Failed to update SKU {sku}: {e}")
+#     return result
+
 @app.route("/data-clear", methods=["POST", "GET"])
 def datadeleter():
     if request.method == "GET":
         return render_template("datacreator.html")
+
     if request.method == "POST":
         result = {
             "totalid": 0,
@@ -97,27 +147,20 @@ def datadeleter():
             "failed_id": [],
             "updated_id": [],
         }
-        skulist = [int(i) for i in re.findall("(\d+)", request.form["idboxname"])]
+
+        skulist = [int(i) for i in re.findall(r"(\d+)", request.form["idboxname"])]
         skulist.sort()
         result["totalid"] = len(skulist)
-        existing_skus = []
 
         for sku in skulist:
             product = Info.query.get(sku)
-            if product:
-                 existing_skus.append(sku)
-            else:
+            if not product:
                 result["not_found"] += 1
                 result["not_found_id"].append(sku)
+                continue
 
-        for sku in existing_skus:
             try:
-                product_to_update = Info.query.get(sku)
-                product_to_update.islisted = 0
-                product_to_update.isproblem = 0
-                product_to_update.listingdate = None
-                product_to_update.problem = None
-                product_to_update.prodlem_josn = None
+                db.session.delete(product)
                 db.session.commit()
                 result["success"] += 1
                 result["updated_id"].append(sku)
@@ -125,8 +168,10 @@ def datadeleter():
                 db.session.rollback()
                 result["failed"] += 1
                 result["failed_id"].append(sku)
-                print(f"Failed to update SKU {sku}: {e}")
-    return result
+                print(f"❌ Failed to delete SKU {sku}: {e}")
+
+        return result
+
 
 @app.route("/get_listing")
 @app.route("/get_listing/")
@@ -156,6 +201,7 @@ def get_listing_etsy(cat=None):
         ).first()
     else:
         single_product = Info.query.filter_by(islisted=False, isproblem=False).first()
+
 
     if single_product is not None:
         sku = single_product.sku
