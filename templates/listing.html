@@ -46,12 +46,12 @@
       {%endif%}
     </div>
     {% endfor %}
-    {% for i in range(3) %}
-    <div class="columns">      
-      <input class="input" type="text" value="{{data.key_features[i]}}"/>
- </div>
- {% endfor %}
   </div>
+  {% for i in range(3) %}
+  <div class="columns">      
+    <input class="input" type="text" value="{{data.key_features[i]}}"/>
+</div>
+{% endfor %}
   <div class="columns">
     <div class="column">
       {{data['source']|safe}}
@@ -68,6 +68,25 @@
     </div>
   </div>
   <div>{{data['done']}}</div>
+
+  <div>
+    {% for i in range(5) %}
+    <div><input value="{{data['audience_present'][i]|safe}}"></input></div>
+    {%endfor %}
+  </div>
+
+  <div><input value="{{data['url_address']|safe}}"></input></div>
+
+  {% if data['material_from_keywords_cleaned'] is not none %}   
+  {% for i in range(4) %}
+  <div><input value="{{data['material_from_keywords_cleaned'][i]|safe}}"></input></div>
+  {%endfor %}
+{% else %}
+{% for i in range(4) %}
+<div><input value="None"></input></div>
+{%endfor %}
+{% endif %}
+
 </div>
 
 <script>
