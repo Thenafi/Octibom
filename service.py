@@ -8,11 +8,11 @@ import re
 load_dotenv()
 
 
-def imagecheck (url):
-    res = requests.get(url)
-    if res.ok :
-        return True
-    else :
+def imagecheck(url):
+    try:
+        r = requests.get(url, timeout=5)  # seconds
+        return r.status_code == 200
+    except Exception:
         return False
 
 def stringogen(item):
@@ -123,14 +123,24 @@ def scraping(sku):
         data["name"] = soup_values[2]
         data["source"] = BeautifulSoup(res.content, "html.parser").body
         if len(soup_values[2]) > 3 and len(soup_values[2]) < 240:
-            data["list_of_urls"] = [soup_values[i] for i in range(9, 15)]
-            # [soup_values[i] for i in range(46,50)]
-            data["report"] = None
-            # checked_list = [imagecheck(i) for i in data["list_of_urls"]]
+            original_url = soup_values[9]  # assuming 9 is the first image URL
+            # Generate 10 image URLs based on pattern
+            match = re.search(r'/products/(\d+)/', original_url)
+            product_id = match.group(1) if match else 'Unknown'
+
+            base_url = re.sub(r'image\d{2}_2000\.jpg', 'image{:02d}_2000.jpg', original_url)
+            data['list_of_urls'] = [base_url.format(i) for i in range(1, 11)]
+            checked_list = [imagecheck(i) for i in data['list_of_urls']]
+
+            # print(checked_list)
+
+            valid_count = sum(checked_list)
             # if not all(checked_list):
-            #     data["report"].append("Image Not Ok")
-            # else:
-            #     data["report"] = None
+            if valid_count < 6:
+                print(f"Image Problem: {product_id}")
+                data['report'].append("Image Not Ok")
+            else:
+                data['report'] = None
         else:
             data["report"].append("Issue With Title")
 
